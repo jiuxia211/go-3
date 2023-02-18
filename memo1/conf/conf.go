@@ -2,7 +2,7 @@ package conf
 
 import (
 	"fmt"
-	"paa/memo/model"
+	"strings"
 
 	"gopkg.in/ini.v1"
 )
@@ -10,33 +10,29 @@ import (
 var (
 	AppMode    string
 	HttpPort   string
-	Db         string
-	DbHost     string
-	DbPort     string
 	DbUser     string
 	DbPassWord string
+	DbHost     string
 	DbName     string
+	DbPort     string
+	Path       string
 )
 
 func Init() {
 	file, err := ini.Load("./conf/config.ini")
 	if err != nil {
-		fmt.Println("配置文件读取错误，请检查文件路径")
+		fmt.Println("配置文件读取错误")
 	}
-	LoadServer(file)
-	LoadMysql(file)
-	path := "root:lcx0821.@tcp(localhost:3306)/todoList?charset=utf8mb4&parseTime=True&loc=Local"
-	model.Database(path)
-}
-func LoadServer(file *ini.File) {
 	AppMode = file.Section("service").Key("AppMode").String()
 	HttpPort = file.Section("service").Key("HttpPort").String()
-}
-func LoadMysql(file *ini.File) {
-	Db = file.Section("mysql").Key("Db").String()
-	DbHost = file.Section("mysql").Key("DbHost").String()
-	DbPort = file.Section("mysql").Key("DbPort").String()
 	DbUser = file.Section("mysql").Key("DbUser").String()
 	DbPassWord = file.Section("mysql").Key("DbPassWord").String()
+	DbHost = file.Section("mysql").Key("DbHost").String()
 	DbName = file.Section("mysql").Key("DbName").String()
+	DbPort = file.Section("mysql").Key("DbPort").String()
+	fmt.Println(AppMode, HttpPort, DbUser, DbPassWord, DbHost, DbName)
+	//"用户名:密码@tcp(ip:port)/dbName?charset=utf8mb4&parseTime=True&loc=Local"
+	Path = strings.Join([]string{DbUser, ":", DbPassWord, "@tcp(", DbHost, ":", DbPort,
+		")/", DbName, "?charset=utf8mb4&parseTime=True&loc=Local"}, "")
+
 }

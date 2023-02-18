@@ -1,7 +1,7 @@
 package api
 
 import (
-	"paa/memo/service"
+	"jiuxia/memo1/service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,5 +23,4 @@ func UserLogin(c *gin.Context) {
 	} else {
 		c.JSON(400, err)
 	}
-
 }

@@ -8,20 +8,19 @@ import (
 type User struct {
 	gorm.Model
 	UserName       string `gorm:"unique"`
+	Email          string
 	PasswordDigest string
 }
 
-// 密码加密
 func (user *User) SetPassword(password string) error {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 12)
+	passwordDigest, err := bcrypt.GenerateFromPassword([]byte(password), 12)
 	if err != nil {
 		return err
+	} else {
+		user.PasswordDigest = string(passwordDigest)
+		return nil
 	}
-	user.PasswordDigest = string(bytes)
-	return nil
 }
-
-// 解密
 func (user *User) CheckPassword(password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(user.PasswordDigest), []byte(password))
 	return err == nil
